@@ -3,13 +3,25 @@ let musicPlaying = false
 window.addEventListener('load', () => {
     launchConfetti()
 
-    // Autoplay music (works since user clicked Yes to get here)
     const music = document.getElementById('bg-music')
     music.volume = 0.3
-    music.play().catch(() => {})
-    musicPlaying = true
-    document.getElementById('music-toggle').textContent = '🔊'
+    music.play().then(() => {
+        musicPlaying = true
+        document.getElementById('music-toggle').textContent = '🔊'
+    }).catch(() => {})
 })
+
+function startMusic() {
+    const music = document.getElementById('bg-music')
+    music.muted = false
+    music.play().then(() => {
+        musicPlaying = true
+        document.getElementById('music-toggle').textContent = '🔊'
+    }).catch(() => {})
+}
+
+document.addEventListener('pointerdown', startMusic, { once: true })
+document.addEventListener('keydown', startMusic, { once: true })
 
 function launchConfetti() {
     const colors = ['#ff69b4', '#ff1493', '#ff85a2', '#ffb3c1', '#ff0000', '#ff6347', '#fff', '#ffdf00']
@@ -56,8 +68,9 @@ function toggleMusic() {
         musicPlaying = false
         document.getElementById('music-toggle').textContent = '🔇'
     } else {
-        music.play()
-        musicPlaying = true
-        document.getElementById('music-toggle').textContent = '🔊'
+        music.play().then(() => {
+            musicPlaying = true
+            document.getElementById('music-toggle').textContent = '🔊'
+        }).catch(() => {})
     }
 }
