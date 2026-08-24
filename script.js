@@ -32,25 +32,27 @@ let yesTeasedCount = 0
 
 let noClickCount = 0
 let runawayEnabled = false
-let musicPlaying = true
+let musicPlaying = false
 
 const catGif = document.getElementById('cat-gif')
 const yesBtn = document.getElementById('yes-btn')
 const noBtn = document.getElementById('no-btn')
 const music = document.getElementById('bg-music')
 
-// Autoplay: audio starts muted (bypasses browser policy), unmute immediately
 music.muted = true
 music.volume = 0.3
-music.play().then(() => {
+music.play().catch(() => {})
+
+function startMusic() {
     music.muted = false
-}).catch(() => {
-    // Fallback: unmute on first interaction
-    document.addEventListener('click', () => {
-        music.muted = false
-        music.play().catch(() => {})
-    }, { once: true })
-})
+    music.play().then(() => {
+        musicPlaying = true
+        document.getElementById('music-toggle').textContent = '🔊'
+    }).catch(() => {})
+}
+
+document.addEventListener('pointerdown', startMusic, { once: true })
+document.addEventListener('keydown', startMusic, { once: true })
 
 function toggleMusic() {
     if (musicPlaying) {
@@ -105,8 +107,8 @@ function handleNoClick() {
     }
 
     // Swap cat GIF through stages
-    const gifIndex = Math.min(noClickCount, gifStages.length - 1)
-    swapGif(gifStages[gifIndex])
+    // const gifIndex = Math.min(noClickCount, gifStages.length - 1)
+    // swapGif(gifStages[gifIndex])
 
     // Runaway starts at click 5
     if (noClickCount >= 5 && !runawayEnabled) {
